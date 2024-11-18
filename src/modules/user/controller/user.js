@@ -52,7 +52,10 @@ const deleteUser = catchError(async (req, res, next) => {
 })
 
 const getUsers = catchError(async (req, res, next) => {
-    let users = await userModel.find()
+    let users = await userModel.find().populate({
+        path: 'budgets.budgetId',
+        select: 'name'
+    })
     res.send({ msg: "success", users })
 })
 
