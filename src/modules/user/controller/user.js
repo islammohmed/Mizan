@@ -10,36 +10,63 @@ const addUser = catchError(async (req, res, next) => {
     !user && next(new AppError('invalid data', 404))
     user && res.send({ msg: 'success', user: { name: user.name, email: user.email } })
 })
-// const updateUser = catchError(async (req, res, next) => {
-//     let { name, role } = req.body
-//     let updateUser = await userModel.findByIdAndUpdate(req.user._id, { name, role }, { new: true })
-//     console.log(updateUser);
-//     res.send({ msg: "success", updateUser })
-// })
+const updateUser = catchError(async (req, res, next) => {
+    const { name, budgets } = req.body;
+    // Step 1: Fetch the user from the database
+    console.log(req.params.id);
+    const user = await userModel.findById(req.params.id);
+    console.log(user);
 
-// const deleteUser = catchError(async (req, res, next) => {
-//     await userModel.findByIdAndDelete(req.user._id)
-//     res.send({ msg: "success" })
-// })
+    if (!user) {
+        return next(new AppError('User not found', 404));
+    }
+    // Step 2: Update user's name if provided
+    if (name) {
+        user.name = name;
+    }
+    // Step 3: Update budgets if provided
+    if (budgets && Array.isArray(budgets)) {
+        budgets.forEach(({ budgetId, permission }) => {
+            // Check if the budget already exists
+            const existingBudget = user.budgets.find(
+                (budget) => budget.budgetId.toString() === budgetId
+            );
+            if (existingBudget) {
+                // Update the permission if budget exists
+                existingBudget.permission = permission;
+            } else {
+                // Add a new budget entry if it doesn't exist
+                user.budgets.push({ budgetId, permission });
+            }
+        });
+    }
+    // Step 4: Save the updated user
+    const updatedUser = await user.save();
+    res.status(200).send({ msg: "success", updatedUser });
+});
 
-// const getUsers = catchError(async (req, res, next) => {
-//     let apiFeature = new ApiFeature(userModel.find(), req.query)
-//         .pagenation(10).fields().search('name', 'email').sort().filter()
-//     let users = await apiFeature.mongoseQuery
-//     res.send({ msg: "success", pageNumber: apiFeature.pageNumber, users })
-// })
 
-// const getSingleUser = catchError(async (req, res, next) => {
-//     let user = await userModel.findById(req.params.id)
-//     res.send({ msg: "success", user })
-// })
+const deleteUser = catchError(async (req, res, next) => {
+    await userModel.findByIdAndDelete(req.user._id)
+    res.send({ msg: "success" })
+})
+
+const getUsers = catchError(async (req, res, next) => {
+    let users = await userModel.find()
+    res.send({ msg: "success", users })
+})
+
+const getSingleUser = catchError(async (req, res, next) => {
+    let user = await userModel.findById(req.params.id)
+    res.send({ msg: "success", user })
+})
 
 
 
 export {
     addUser,
-    // updateUser,
-    // deleteUser,
-    // getUsers,
-    // getSingleUser
+    updateUser,
+    deleteUser,
+    getUsers,
+    getSingleUser
 }

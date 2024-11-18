@@ -1,5 +1,18 @@
 import bcrypt from 'bcrypt'
 import mongoose from "mongoose";
+const budgetPermissionSchema = new mongoose.Schema({
+    budgetId: {
+        type: mongoose.Types.ObjectId,
+        ref: 'budget',
+        required: true
+    },
+    permission: {
+        type: String,
+        enum: ['view', 'edit'],
+        default: 'view',
+        required: true
+    }
+});
 const schema = new mongoose.Schema({
     name: {
         type: String,
@@ -23,7 +36,8 @@ const schema = new mongoose.Schema({
         default: 'user',
         lowercase: true,
         required: true
-    }
+    },
+    budgets: [budgetPermissionSchema]
 }, { timestamps: true })
 schema.pre('save', function () {
     this.password = bcrypt.hashSync(this.password, 8)

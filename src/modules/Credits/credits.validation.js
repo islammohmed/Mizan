@@ -1,9 +1,10 @@
 import joi from 'joi'
-const addCreditVal = joi.object({
-    name: joi.string().min(2).max(100).required(),
-    reason: joi.string(),
-    allocation: joi.number()
-})
+const addCreditsVal = joi.object({
+    budgetId: joi.string().hex().length(24).required(),
+    name: joi.string().min(3).max(100).trim().required(),
+    reason: joi.string().required(),
+    allocation: joi.number().positive().required()
+});
 export {
-    addCreditVal
+    addCreditsVal
 }

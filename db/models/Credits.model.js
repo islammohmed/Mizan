@@ -15,6 +15,10 @@ const schema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    userId: {
+        type: mongoose.Types.ObjectId,
+        ref: 'user',
+    }
 }, { timestamps: true })
 
 export const CreditsModel = mongoose.model('Credits', schema)
