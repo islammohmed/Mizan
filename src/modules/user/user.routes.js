@@ -11,8 +11,9 @@ userRouter
     .post(protectedRouter, validation(addUserVal), checkEmail, allowedTo('admin'), addUser)
 userRouter.route('/user')
     .get(protectedRouter, allowedTo('admin'), getUsers)
+userRouter.route('/user')
+    .get(protectedRouter, validation(paramsIdVal), getSingleUser)
 userRouter.route('/user/:id')
     .put(protectedRouter, allowedTo('admin'), validation(updateUserVal), updateUser)
-    .get(protectedRouter, validation(paramsIdVal), getSingleUser)
     .delete(protectedRouter, allowedTo('admin'), validation(paramsIdVal), deleteUser)
 export default userRouter
