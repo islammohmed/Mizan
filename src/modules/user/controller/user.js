@@ -60,7 +60,10 @@ const getUsers = catchError(async (req, res, next) => {
 })
 
 const getSingleUser = catchError(async (req, res, next) => {
-    let user = await userModel.findById(req.user._id)
+    let user = await userModel.findById(req.user._id).populate({
+        path: 'budgets.budgetId',
+        select: 'name'
+    })
     res.send({ msg: "success", user })
 })
 
