@@ -47,7 +47,7 @@ const updateUser = catchError(async (req, res, next) => {
 
 
 const deleteUser = catchError(async (req, res, next) => {
-    await userModel.findByIdAndDelete(req.user._id)
+    await userModel.findByIdAndDelete(req.params._id)
     res.send({ msg: "success" })
 })
 
@@ -60,7 +60,7 @@ const getUsers = catchError(async (req, res, next) => {
 })
 
 const getSingleUser = catchError(async (req, res, next) => {
-    let user = await userModel.findById(req.params.id)
+    let user = await userModel.findById(req.user._id)
     res.send({ msg: "success", user })
 })
 

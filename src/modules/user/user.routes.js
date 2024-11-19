@@ -13,6 +13,6 @@ userRouter.route('/user')
     .get(protectedRouter, allowedTo('admin'), getUsers)
 userRouter.route('/user/:id')
     .put(protectedRouter, allowedTo('admin'), validation(updateUserVal), updateUser)
-    .get(protectedRouter, allowedTo('admin'), validation(paramsIdVal), getSingleUser)
+    .get(protectedRouter, validation(paramsIdVal), getSingleUser)
     .delete(protectedRouter, allowedTo('admin'), validation(paramsIdVal), deleteUser)
 export default userRouter
