@@ -47,7 +47,7 @@ const updateUser = catchError(async (req, res, next) => {
 
 
 const deleteUser = catchError(async (req, res, next) => {
-    await userModel.findByIdAndDelete(req.params._id)
+    const deleteUser = await userModel.findByIdAndDelete(req.params.id);
     res.send({ msg: "success" })
 })
 
@@ -61,8 +61,7 @@ const getUsers = catchError(async (req, res, next) => {
 
 const getSingleUser = catchError(async (req, res, next) => {
     let user = await userModel.findById(req.user._id).populate({
-        path: 'budgets.budgetId',
-        select: 'name'
+        path: 'budgets.budgetId'
     })
     res.send({ msg: "success", user })
 })
